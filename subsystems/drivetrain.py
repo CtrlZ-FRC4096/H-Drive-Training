@@ -10,11 +10,11 @@ class Drivetrain(SubsystemBase):
         self.robot = robot
         left_motor_1 = ctre.VictorSPX(3)
         left_motor_2 = ctre.VictorSPX(2)
-        self.left_motors = wpilib.MotorControllerGroup(left_motor_1, left_motor_2)
+        self.left_motors = MotorController(left_motor_1, left_motor_2)
         right_motor_1 = ctre.VictorSPX(1)
         right_motor_2 = ctre.VictorSPX(0)
-        self.right_motors = wpilib.MotorControllerGroup(right_motor_1, right_motor_2)
-        self.middle_motor = ctre.VictorSPX(4)
+        self.right_motors = MotorController(right_motor_1, right_motor_2)
+        self.middle_motor = MotorController(ctre.VictorSPX(4))
     
     def stop(self):
         self.left_motors.set(0)
@@ -31,3 +31,10 @@ class Drivetrain(SubsystemBase):
         right /= maximum
         self.left_motors.set(left)
         self.right_motors.set(right)
+
+class MotorController:
+    def __init__(self, *args: ctre.VictorSPX):
+        self.motors = args
+    def set(self, value: float):
+        for motor in self.motors:
+            motor.set(ctre.ControlMode.PercentOutput, value)
